@@ -2,21 +2,20 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-create_key() {
-    local _key="EXCXHXO"
-
+decipher_key() {
+    local _key=$1
     local _res=0
     for (( i=0; i<${#_key}; i++ )); do
         char="${_key:$i:1}"
         printf -v decimal "%d" "'$char"
         
-        _res=$(( $_res + $decimal ** $i))
+        _res=$(( $_res + $decimal))
     done
 
     echo $_res
 }
 
-echo "$(basename "$0") a bien été lancé."
+key=$(decipher_key "$(< ./var/cache/key)")
 
 echo "Ceci est la phrase de fin à trouver :) hehehehe" > "solution.secret"
 
@@ -26,10 +25,6 @@ TXT_FILE_NAME="message_chiffre"
 xxd -p -c 1 "solution.secret" > $TXT_FILE_NAME
 
 rm "solution.secret"
-
-# Définit la clé tel que key dans [0, 9], et la met dans le fichier 
-key=$(create_key)
-echo $key > key
 
 while read -r line; do
     # Récupère la valeur de chaque ligne et la trim (enlève les espaces)

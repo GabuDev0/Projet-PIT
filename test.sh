@@ -27,11 +27,9 @@ progress_bar() {
 }
 
 random_noise() {
-    random_sleep
-    # Listes de fragments et mots
     WORDS=("auth" "access" "init" "ECHO" "recv" "send")
     CHARS=( {a..z} {A..Z} {0..9} )
-
+    
     # Choisir aléatoirement le type de texte
     type=$((RANDOM % 10))
 
@@ -44,6 +42,9 @@ random_noise() {
             ;;
         1)
             random_string
+            random_string
+            random_string
+            echo
             ;;
 
         2)
@@ -80,6 +81,9 @@ random_noise() {
     esac
 }
 random_string() {
+    # Listes de fragments et mots
+    WORDS=("auth" "access" "init" "ECHO" "recv" "send")
+    CHARS=( {a..z} {A..Z} {0..9} )
     t=$((RANDOM % 10 + 2))
     # chaine aléatoire
     for ((i=0;i<t;i++)); do
@@ -113,7 +117,7 @@ long_random_sleep() {
     duration=0.$((RANDOM % 20))
     sleep $duration
 }
-
+clear
 while (( signals_seen < NBR_SIGNALS )); do
     random_noise
     ((signals_seen++)) 

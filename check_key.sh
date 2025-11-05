@@ -31,12 +31,28 @@ decode() {
 
 verify_key() {
     decoded=$(decode $TXT_FILE_NAME $1) # Décode le message en hex du fichier message_chiffre en utilisant la clé passée en $1
+    echo decoded: $decoded
+    key=$(decipher_key "$(< ./var/cache/key)")
 
-    if [[ "$decoded" == "$(decode $TXT_FILE_NAME $(< key))" ]]; then
+    correct_code="$(decode $TXT_FILE_NAME $key)"
+    if [[ "$decoded" == "$correct_code" ]]; then
         echo "Vous avez trouvé le bon message !"
     else
         echo "C'est pas le bon message..."
     fi
 }
 
-verify_key $1
+decipher_key() {
+    local _key=$1
+    local _res=0
+    for (( i=0; i<${#_key}; i++ )); do
+        char="${_key:$i:1}"
+        printf -v decimal "%d" "'$char"
+        
+        _res=$(( $_res + $decimal))
+    done
+
+    echo $_res
+}
+
+verify_key $(decipher_key "$1")
