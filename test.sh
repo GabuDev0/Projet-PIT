@@ -33,38 +33,17 @@ random_noise() {
     CHARS=( {a..z} {A..Z} {0..9} )
 
     # Choisir aléatoirement le type de texte
-    type=$((RANDOM % 7))
+    type=$((RANDOM % 10))
 
     case $type in
         0)
-            # chaine aléatoire
-            len=$((RANDOM % 15 + 5))
-            log=$((RANDOM % 1000))
-            word="${WORDS[RANDOM % ${#WORDS[@]}]}"
-            str="$word"
+            random_string
 
-            str+=" LOG: $log"
-            for ((i=0;i<len;i++)); do
-                str+="${CHARS[RANDOM % ${#CHARS[@]}]}"
-            done
-            random_echo "$str"
-            
-            # progress bar
             progress_bar
             echo
             ;;
         1)
-            # chaine aléatoire
-            len=$((RANDOM % 15 + 5))
-            log=$((RANDOM % 1000))
-            word="${WORDS[RANDOM % ${#WORDS[@]}]}"
-            str="$word"
-
-            str+=" LOG: $log"
-            for ((i=0;i<len;i++)); do
-                str+="${CHARS[RANDOM % ${#CHARS[@]}]}"
-            done
-            random_echo "$str"
+            random_string
             ;;
 
         2)
@@ -91,10 +70,32 @@ random_noise() {
             printf $key >> ./var/cache/key 
             random_echo "$str"
             ;;
-            
+
+        4)
+            clear
+            ;;
+        5)
+            long_random_sleep
+            ;;
     esac
 }
+random_string() {
+    t=$((RANDOM % 10 + 2))
+    # chaine aléatoire
+    for ((i=0;i<t;i++)); do
+        
+        len=$((RANDOM % 15 + 5))
+        log=$((RANDOM % 1000))
+        word="${WORDS[RANDOM % ${#WORDS[@]}]}"
+        str="$word"
 
+        str+=" LOG: $log"
+        for ((i=0;i<len;i++)); do
+            str+="${CHARS[RANDOM % ${#CHARS[@]}]}"
+        done
+        random_echo "$str"
+    done
+}
 random_echo() {
     if (( RANDOM % 3 == 0 )); then
         echo -ne "\r$1"
@@ -105,6 +106,11 @@ random_echo() {
 
 random_sleep() {
     duration=0.0$((RANDOM % 10))
+    sleep $duration
+}
+
+long_random_sleep() {
+    duration=0.$((RANDOM % 20))
     sleep $duration
 }
 
