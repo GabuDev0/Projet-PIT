@@ -29,9 +29,9 @@ progress_bar() {
 random_noise() {
     WORDS=("auth" "access" "init" "ECHO" "recv" "send")
     CHARS=( {a..z} {A..Z} {0..9} )
-    
+
     # Choisir aléatoirement le type de texte
-    type=$((RANDOM % 10))
+    type=$((RANDOM % 20))
 
     case $type in
         0)
@@ -73,11 +73,18 @@ random_noise() {
             ;;
 
         4)
-            clear
-            ;;
-        5)
             long_random_sleep
             ;;
+
+        5)
+            clear
+            ;;
+
+        *)
+            random_string
+            ;;
+
+
     esac
 }
 random_string() {
@@ -109,12 +116,13 @@ random_echo() {
 }
 
 random_sleep() {
-    duration=0.0$((RANDOM % 10))
+    duration=0.0$(($RANDOM % 10))
     sleep $duration
 }
 
 long_random_sleep() {
-    duration=0.$((RANDOM % 20))
+    duration=0.$((($RANDOM % 20 + 10)*5))
+    echo $duration
     sleep $duration
 }
 clear

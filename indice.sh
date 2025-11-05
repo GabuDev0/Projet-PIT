@@ -2,6 +2,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-if (( $1 == 0 )); then
-    echo "Indice: vous n'êtes pas obligés de tout retenir..."
-fi
+
+case $1 in
+    0)
+        echo "Indice: il doit bien y avoir un moyen de sauvegarder tout ce texte..."
+        ;;
+    *)
+        echo "Ce mini-jeu n'existe pas encore"
+        ;;
+esac
