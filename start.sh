@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 create_key() {
-    local _key="BA100J"
+    local _key="EXCXHXO"
 
     local _res=0
     for (( i=0; i<${#_key}; i++ )); do
