@@ -4,23 +4,6 @@ IFS=$'\n\t'
 
 # ./create_logs.sh
 
-# ** CONST
-
-OUTDIR="./var/log"
-NETLOG="$OUTDIR/network.log"
-
-: > "$NETLOG"
-
-LEURRES=()
-NUM_LEURRES=12
-NBR_ENTRIES=10
-
-TARGET_IP=$(generate_random_ip)
-
-CHARS=( {a..z} {A..Z} {0..9} )
-
-KEY=""
-
 generate_random_ip() {
     printf "%d.%d.%d.%d" $((10 + RANDOM % 240)) $((1 + RANDOM % 253)) $((1 + RANDOM % 253)) $((1 + RANDOM % 253))
 }
@@ -97,6 +80,23 @@ write_ack() {
   
     printf "%s\n" "$msg" >> "$NETLOG"
 }
+
+# ** CONST
+
+OUTDIR="./var/log"
+NETLOG="$OUTDIR/network.log"
+
+: > "$NETLOG"
+
+LEURRES=()
+NUM_LEURRES=12
+NBR_ENTRIES=10
+
+TARGET_IP=$(generate_random_ip)
+
+CHARS=( {a..z} {A..Z} {0..9} )
+
+KEY=""
 
 for ((i=0;i<5;i++)); do
     KEY+="${CHARS[RANDOM % ${#CHARS[@]}]}"
