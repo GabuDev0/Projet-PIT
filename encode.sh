@@ -2,7 +2,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-decipher_key() {
+# ./encode.sh [msg]
+# // should add key
+
+# ** CONST
+
+TXT_FILE_NAME=".secret"
+
+key_to_decimal() {
     local _key=$1
     local _res=0
     for (( i=0; i<${#_key}; i++ )); do
@@ -15,11 +22,10 @@ decipher_key() {
     echo $_res
 }
 
-key=$(decipher_key "$(< ./var/cache/key)")
+key=$(key_to_decimal "$(< ./var/cache/key)")
 
-echo "Ceci est la phrase de fin à trouver :) hehehehe" > "solution.secret"
+echo "$1" > "solution.secret"
 
-TXT_FILE_NAME=".secret"
 
 # Convertit la solution en hexa
 xxd -p -c 1 "solution.secret" > $TXT_FILE_NAME
@@ -35,10 +41,8 @@ while read -r line; do
     decimal_plus_key=$(( 0x$hex + $key ))
 
     # Reconvertit en hexa
-    hex_plus_one=$(printf "%x" "$decimal_plus_key")
+    hex_plus_one=$(printf "%02x" "$decimal_plus_key")
 done < "$TXT_FILE_NAME"
-
-echo "Le jeu a commencé."
 
 # Temps au lancement du jeu
 start_time=$(date +%s)

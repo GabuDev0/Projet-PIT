@@ -1,3 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# ./ping.sh [ip_address] [key]
+
 target_ip="$1"
 try_key="$2"
 CORRECT_IP="$(< "./var/cache/tmp/ip")"

@@ -2,7 +2,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-NBR_SIGNALS=100
+# ./connect.sh
+
+NBR_SIGNALS=5
 signals_seen=0
 
 progress_bar() {
@@ -154,10 +156,17 @@ long_random_sleep() {
     duration=0.$((($RANDOM % 20 + 10)*5))
     sleep $duration
 }
-clear
 
-while (( signals_seen < NBR_SIGNALS )); do
-    random_noise
-    ((signals_seen++)) 
-    random_sleep
-done
+if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
+    clear
+    echo "Le fichier existe. SHOULD CONNECT TO ./bin/ip WITH KEY ./bin/key"
+    while (( signals_seen < NBR_SIGNALS )); do
+        random_noise
+        ((signals_seen++)) 
+        random_sleep
+    done
+
+    ./encode.sh "Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC" 
+else
+    echo "Error: key/ip not found in ./bin/"
+fi
