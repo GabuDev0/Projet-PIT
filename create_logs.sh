@@ -16,7 +16,7 @@ write_timeout() {
     local seq="$2"
     local ts="$3"
     local msg
-    msg=$(printf "%s echo net: SRC=%s DST=echo.dst ICMP_SEQ=%02d RESPONSE=timeout" \
+    msg=$(printf "%s echo net: SRC=192.1.1.x DST=%s ICMP_SEQ=%02d RESPONSE=timeout" \
             "$ts" "$ip" "$seq")
 
     echo "$msg"
@@ -29,7 +29,7 @@ write_unreachable() {
     local seq="$2"
     local ts="$3"
     local msg
-    msg=$(printf "%s echo net: SRC=%s DST=echo.dst ICMP_SEQ=%02d RESPONSE=destination_unreachable" \
+    msg=$(printf "%s echo net: SRC=192.1.1.x DST=%s ICMP_SEQ=%02d RESPONSE=destination_unreachable" \
             "$ts" "$ip" "$seq")
 
     echo "$msg"
@@ -43,7 +43,7 @@ write_ack_with_key() {
     local ts=$3
     local msg
 
-    msg=$(printf "%s echo net: SRC=%s DST=echo.dst ICMP_SEQ=%02d RESPONSE=ACK keyfrag=%s SESSION=established" \
+    msg=$(printf "%s echo net: SRC=%s DST=192.1.1.x ICMP_SEQ=%02d RESPONSE=ACK keyfrag=%s SESSION=established" \
             "$ts" "$ip" "$seq" "$KEY")
 
     echo "$msg"
@@ -62,7 +62,7 @@ write_ack_with_fake_key() {
         fake_key+="${CHARS[RANDOM % ${#CHARS[@]}]}"
     done
 
-    msg=$(printf "%s echo net: SRC=%s DST=echo.dst ICMP_SEQ=%02d RESPONSE=ACK keyfrag=%s SESSION=established" \
+    msg=$(printf "%s echo net: SRC=%s DST=192.1.1.x ICMP_SEQ=%02d RESPONSE=ACK keyfrag=%s SESSION=established" \
             "$ts" "$ip" "$seq" "$fake_key")
 
     echo "$msg"
