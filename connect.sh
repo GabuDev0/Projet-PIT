@@ -155,6 +155,7 @@ long_random_sleep() {
     sleep $duration
 }
 clear
+
 while (( signals_seen < NBR_SIGNALS )); do
     random_noise
     ((signals_seen++)) 

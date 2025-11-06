@@ -19,7 +19,7 @@ key=$(decipher_key "$(< ./var/cache/key)")
 
 echo "Ceci est la phrase de fin à trouver :) hehehehe" > "solution.secret"
 
-TXT_FILE_NAME="message_chiffre"
+TXT_FILE_NAME=".secret"
 
 # Convertit la solution en hexa
 xxd -p -c 1 "solution.secret" > $TXT_FILE_NAME
