@@ -1,3 +1,0 @@
-Jeu 1: il y a des codes d'accès (avec le préfixe KEY:) qui pop à l'écran, et il faut tous les retenir. Quand on les colle ensemble,
-ça donne la clé pour récup les données
-Indice: vous n'êtes pas obligés de tout retenir...

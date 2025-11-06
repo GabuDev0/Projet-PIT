@@ -26,6 +26,7 @@ xxd -p -c 1 "solution.secret" > $TXT_FILE_NAME
 
 rm "solution.secret"
 
+# TODO: mettre dans une fonction encode()
 while read -r line; do
     # Récupère la valeur de chaque ligne et la trim (enlève les espaces)
     hex=$(echo "$line" | tr -d '[:space:]')

@@ -26,6 +26,21 @@ progress_bar() {
     done
 }
 
+random_line() {
+    p=0
+
+    while (( p < 100 )); do
+        p=$(( p + RANDOM % 10 ))
+        (( p > 100 )) && p=100
+
+        str=$(random_string)
+
+        printf "\rreading" "$str"
+        random_sleep
+
+    done
+}
+
 random_noise() {
     WORDS=("auth" "access" "init" "ECHO" "recv" "send")
     CHARS=( {a..z} {A..Z} {0..9} )
@@ -42,8 +57,14 @@ random_noise() {
             ;;
         1)
             random_string
+            random_sleep
+
             random_string
+            random_sleep
+
             random_string
+            random_sleep
+
             echo
             ;;
 
@@ -56,6 +77,8 @@ random_noise() {
 
             str+=" $((RANDOM % 256)).$((RANDOM % 256)).$((RANDOM % 256)).$((RANDOM % 256))"
             random_echo "$str"
+
+            random_sleep
             ;;
 
         3)
@@ -70,6 +93,8 @@ random_noise() {
             str+=$key
             printf $key >> ./var/cache/key 
             random_echo "$str"
+
+            random_sleep
             ;;
 
         4)
@@ -78,17 +103,22 @@ random_noise() {
 
         5)
             clear
+            random_sleep
             ;;
-
+        6)
+            random_line
+            ;;
         *)
             random_string
+            random_sleep
             ;;
 
 
     esac
 }
+
+# TODO: faire que random_string renvoie juste une string normale, et on fait le random_echo et la boucle autre part. Jpp l'utiliser dans random_line
 random_string() {
-    # Listes de fragments et mots
     WORDS=("auth" "access" "init" "ECHO" "recv" "send")
     CHARS=( {a..z} {A..Z} {0..9} )
     t=$((RANDOM % 10 + 2))
@@ -108,7 +138,7 @@ random_string() {
     done
 }
 random_echo() {
-    if (( RANDOM % 3 == 0 )); then
+    if (( RANDOM % 2 == 0 )); then
         echo -ne "\r$1"
     else
         echo "$1"
@@ -122,7 +152,6 @@ random_sleep() {
 
 long_random_sleep() {
     duration=0.$((($RANDOM % 20 + 10)*5))
-    echo $duration
     sleep $duration
 }
 clear
