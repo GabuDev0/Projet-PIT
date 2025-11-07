@@ -6,7 +6,10 @@ IFS=$'\n\t'
 
 case $1 in
     "c")
-        echo "Commandes disponibles: toutes les commandes bash. Scripts bash disponibles: ping.sh [ip_address] [key], connect.sh"
+        echo "Commandes disponibles: toutes les commandes bash. Scripts bash disponibles: ping.sh [ip_address] [key], connect.sh, decode.sh [file path] [key file path]"
+        ;;
+    0)
+        echo ""
         ;;
     *)
         echo "Erreur: Argument inconnu"

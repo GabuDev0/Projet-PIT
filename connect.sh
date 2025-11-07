@@ -4,15 +4,7 @@ IFS=$'\n\t'
 
 # ./connect.sh
 
-NBR_SIGNALS=5
-signals_seen=0
-ECHO_MSG="
-Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC Voici les détails du plan:
 
-XXXXXXX XXXX XX XXXXX XXXX XXXXXXX XXX X X XXX XX X X X XX X X XXXXX X X XX XXX XXXXX X XX XX X XXXXX XXXXXX X XXXXXXXXX X X XXXX X X XX X X
-
-
-Le fichier à envoyer est XASBEF.sh"
 
 progress_bar() {
     p=0
@@ -42,7 +34,7 @@ random_line() {
         p=$(( p + RANDOM % 10 ))
         (( p > 100 )) && p=100
 
-        str=$(random_string)
+        str=$(random_str 5)
 
         printf "\rreading" "$str"
         random_sleep
@@ -59,19 +51,20 @@ random_noise() {
 
     case $type in
         0)
-            random_string
+            random_strings
+            echo
 
             progress_bar
             echo
             ;;
         1)
-            random_string
+            random_strings
             random_sleep
 
-            random_string
+            random_strings
             random_sleep
 
-            random_string
+            random_strings
             random_sleep
 
             echo
@@ -111,14 +104,15 @@ random_noise() {
             ;;
 
         5)
-            #clear
+            clear
             random_sleep
             ;;
         6)
+            #
             random_line
             ;;
         *)
-            random_string
+            random_strings
             random_sleep
             ;;
 
@@ -126,10 +120,7 @@ random_noise() {
     esac
 }
 
-# TODO: faire que random_string renvoie juste une string normale, et on fait le random_echo et la boucle autre part. Jpp l'utiliser dans random_line
-random_string() {
-    WORDS=("auth" "access" "init" "ECHO" "recv" "send")
-    CHARS=( {a..z} {A..Z} {0..9} )
+random_strings() {
     t=$((RANDOM % 10 + 2))
     # chaine aléatoire
     for ((i=0;i<t;i++)); do
@@ -145,6 +136,19 @@ random_string() {
         done
         random_echo "$str"
     done
+}
+
+# chaine aléatoire de longueur $1
+# random_str [int]
+random_str() {
+    CHARS=( {a..z} {A..Z} {0..9} )
+    
+    len=$1
+    log=$((RANDOM % 1000))
+    for ((i=0;i<len;i++)); do
+        str+="${CHARS[RANDOM % ${#CHARS[@]}]}"
+    done
+    random_echo "$str"
 }
 random_echo() {
     if (( RANDOM % 2 == 0 )); then
@@ -164,9 +168,29 @@ long_random_sleep() {
     sleep $duration
 }
 
+WORDS=("auth" "access" "init" "ECHO" "recv" "send")
+CHARS=( {a..z} {A..Z} {0..9} )
+signals_seen=0
+NBR_SIGNALS=10
+EVIL_FILE_NAME=$(random_str 5).sh
+ECHO_MSG="
+Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC
+
+Voici les détails du plan:
+
+XX XX X XXXX XX XXXXX XXXX XXXXXXX XXX X X XXX XX X X X XX X X XXXXX X X X
+XXXXX X XX XX X XXXXX XXXXXX X XXXXXXXXX X X XXXX X X XX X XXXXX X X XXXXX
+XXXX X X XXXX X X XX X XXXX X X X XX XX X X XX X XXXXX X X XXXX X X XX X X
+XXXX X XX XX X XXXXXX X XX XX X XXXXX XXXXXX X XXX XXX X X X XX X X XX X X
+X XXX X X XXXX X X XX X XXX XX X XX XX X XXXXX XXXXXX X XXXXXXXXX X X XXXX
+
+XXX XXXXXX X XXXXXXXXX X X XXXX X X XX X X
+
+Le fichier à envoyer est ./$EVIL_FILE_NAME"
+
+# ./bin/key est la clé utilisée pour se connecter à ECHO
 if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
-    #clear
-    echo "Le fichier existe. SHOULD CONNECT TO ./bin/ip WITH KEY ./bin/key"
+    clear
     while (( signals_seen < NBR_SIGNALS )); do
         random_noise
         ((signals_seen++)) 
@@ -174,6 +198,7 @@ if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
     done
 
     ./encode.sh "$ECHO_MSG" $(< "./bin/key")
+    touch $EVIL_FILE_NAME
 else
     echo "Error: key/ip not found in ./bin/"
 fi

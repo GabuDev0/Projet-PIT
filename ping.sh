@@ -11,7 +11,7 @@ KEY="$(< "./var/cache/tmp/key")"
 
 response_authorized() {
     local ip="$1"
-    local seq=1
+    local seq="$2"
     local time=$((10+RANDOM%3)).$((RANDOM%1000))
     local msg
 
@@ -46,10 +46,11 @@ response_unknown() {
     echo "$msg"
 }
 
+n=0
 while true; do
     if [[ "$target_ip" == "$CORRECT_IP" ]]; then
         if [[ "$try_key" == "$KEY" ]]; then
-            response_authorized $target_ip
+            response_authorized $target_ip $n
 
         else
             response_unauthorized "192.1.1.x" "$target_ip" 102 "blacklist"
@@ -60,5 +61,6 @@ while true; do
     fi
 
     sleep 1
+    n=$((n++))
 
 done

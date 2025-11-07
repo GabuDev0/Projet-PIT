@@ -43,7 +43,5 @@ decode() {
 TMP_FILE_NAME="tmp"
 TXT_FILE_NAME=".secret"
 
-echo "decode "$1" $(< $2)"
-
 echo "Message:"
 decode "$1" $(< $2)

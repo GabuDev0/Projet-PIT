@@ -42,4 +42,3 @@ TMP_FILE_NAME="tmp"
 TXT_FILE_NAME=".secret"
 
 encode "$1" $2
-echo "encode" "$1" $2
