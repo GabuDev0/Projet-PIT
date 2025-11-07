@@ -6,6 +6,13 @@ IFS=$'\n\t'
 
 NBR_SIGNALS=5
 signals_seen=0
+ECHO_MSG="
+Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC Voici les détails du plan:
+
+XXXXXXX XXXX XX XXXXX XXXX XXXXXXX XXX X X XXX XX X X X XX X X XXXXX X X XX XXX XXXXX X XX XX X XXXXX XXXXXX X XXXXXXXXX X X XXXX X X XX X X
+
+
+Le fichier à envoyer est XASBEF.sh"
 
 progress_bar() {
     p=0
@@ -166,7 +173,7 @@ if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
         random_sleep
     done
 
-    ./encode.sh "Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC" $(< "./bin/key")
+    ./encode.sh "$ECHO_MSG" $(< "./bin/key")
 else
     echo "Error: key/ip not found in ./bin/"
 fi

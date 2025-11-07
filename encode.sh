@@ -19,7 +19,7 @@ key_to_decimal() {
 encode() {
     local message="$1"
     local key=$(key_to_decimal $2)
-    echo "$message" > $TMP_FILE_NAME
+    printf "%s" "$message" > "$TMP_FILE_NAME"
     : > $TXT_FILE_NAME
 
     while read -r line; do
@@ -41,5 +41,5 @@ encode() {
 TMP_FILE_NAME="tmp"
 TXT_FILE_NAME=".secret"
 
-encode $1 $2
-echo "encode" $1 $2
+encode "$1" $2
+echo "encode" "$1" $2

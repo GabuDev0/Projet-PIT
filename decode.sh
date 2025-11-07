@@ -36,13 +36,14 @@ decode() {
 
     local _decoded=$(xxd -r -p < $TMP_FILE_NAME)
 
-    echo  $_decoded
+    printf %s "$_decoded"
     rm $TMP_FILE_NAME
 }
 
 TMP_FILE_NAME="tmp"
 TXT_FILE_NAME=".secret"
 
-echo "decode $1 $(< $2)"
+echo "decode "$1" $(< $2)"
 
-echo Message: $(decode $1 $(< $2))
+echo "Message:"
+decode "$1" $(< $2)
