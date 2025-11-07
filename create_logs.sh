@@ -46,6 +46,7 @@ write_ack_with_key() {
     echo "$msg"
     
     printf "%s" "$ip" > "./var/cache/tmp/ip"
+    printf "%s" "$KEY" > "./var/cache/tmp/key"
     printf "%s\n" "$msg" >> "$NETLOG"
 }
 
@@ -101,7 +102,6 @@ KEY=""
 for ((i=0;i<5;i++)); do
     KEY+="${CHARS[RANDOM % ${#CHARS[@]}]}"
 done
-echo $KEY > "./var/cache/tmp/key"
 
 while (( ${#LEURRES[@]} < NUM_LEURRES )); do
     ip=$(generate_random_ip)

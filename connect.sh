@@ -93,7 +93,7 @@ random_noise() {
                 key+="${CHARS[RANDOM % ${#CHARS[@]}]}"
             done
             str+=$key
-            printf $key >> ./var/cache/key 
+            printf $key >> ./bin/key 
             random_echo "$str"
 
             random_sleep
@@ -104,7 +104,7 @@ random_noise() {
             ;;
 
         5)
-            clear
+            #clear
             random_sleep
             ;;
         6)
@@ -158,7 +158,7 @@ long_random_sleep() {
 }
 
 if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
-    clear
+    #clear
     echo "Le fichier existe. SHOULD CONNECT TO ./bin/ip WITH KEY ./bin/key"
     while (( signals_seen < NBR_SIGNALS )); do
         random_noise
@@ -166,7 +166,7 @@ if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
         random_sleep
     done
 
-    ./encode.sh "Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC" 
+    ./encode.sh "Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC" $(< "./bin/key")
 else
     echo "Error: key/ip not found in ./bin/"
 fi

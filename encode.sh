@@ -2,13 +2,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# ./encode.sh [msg]
-# // should add key
-
-# ** CONST
-
-TXT_FILE_NAME=".secret"
-
 key_to_decimal() {
     local _key=$1
     local _res=0
@@ -19,30 +12,34 @@ key_to_decimal() {
         _res=$(( $_res + $decimal))
     done
 
-    echo $_res
+    echo $(($_res % 256))
 }
 
-key=$(key_to_decimal "$(< ./var/cache/key)")
+# encode [message] [key]
+encode() {
+    local message="$1"
+    local key=$(key_to_decimal $2)
+    echo "$message" > $TMP_FILE_NAME
+    : > $TXT_FILE_NAME
 
-echo "$1" > "solution.secret"
+    while read -r line; do
+        # Récupère la valeur de chaque ligne et la trim (enlève les espaces)
+        hex=$(echo "$line" | tr -d '[:space:]')
+        
+        # Convertit en décimal puis ajoute la clé
+        decimal_plus_key=$(( (0x$hex + $key) % 256 ))
 
+        # Reconvertit en hexa
+        hex_plus_key=$(printf "%02x" "$decimal_plus_key")
 
-# Convertit la solution en hexa
-xxd -p -c 1 "solution.secret" > $TXT_FILE_NAME
+        echo $hex_plus_key >> $TXT_FILE_NAME
+    done < <(xxd -p -c 1 "$TMP_FILE_NAME")
 
-rm "solution.secret"
+    rm $TMP_FILE_NAME
+}
 
-# TODO: mettre dans une fonction encode()
-while read -r line; do
-    # Récupère la valeur de chaque ligne et la trim (enlève les espaces)
-    hex=$(echo "$line" | tr -d '[:space:]')
-    
-    # Convertit en décimal puis ajoute la clé
-    decimal_plus_key=$(( 0x$hex + $key ))
+TMP_FILE_NAME="tmp"
+TXT_FILE_NAME=".secret"
 
-    # Reconvertit en hexa
-    hex_plus_one=$(printf "%02x" "$decimal_plus_key")
-done < "$TXT_FILE_NAME"
-
-# Temps au lancement du jeu
-start_time=$(date +%s)
+encode $1 $2
+echo "encode" $1 $2

@@ -6,3 +6,5 @@ mission.txt
 bin/
 var/
 solution.secret
+.secret
+test.sh
