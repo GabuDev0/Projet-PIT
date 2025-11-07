@@ -133,7 +133,6 @@ random_str() {
     CHARS=( {a..z} {A..Z} {0..9} )
     
     len=$1
-    log=$((RANDOM % 1000))
     for ((i=0;i<len;i++)); do
         str+="${CHARS[RANDOM % ${#CHARS[@]}]}"
     done
@@ -175,8 +174,8 @@ generate_encryption_key() {
 WORDS=("auth" "access" "init" "ECHO" "recv" "send")
 CHARS=( {a..z} {A..Z} {0..9} )
 signals_seen=0
-NBR_SIGNALS=30
-EVIL_FILE_NAME="$(random_str 5).sh"
+NBR_SIGNALS=5
+EVIL_FILE_NAME=$(random_str 5).sh
 ECHO_MSG="Message:
 Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC
 
@@ -198,20 +197,21 @@ AUTH_KEY=$(< "./var/cache/tmp/auth_key.solution")
 # Vérif que l'ip / clé d'authentification sont les bonnes.
 if [[ -f "./bin/key" && -f "./bin/ip" ]]; then
     if [[ "$(< "./bin/ip")" == "$IP" && "$(< "./bin/key")" == "$AUTH_KEY" ]]; then
-        clear
-        while (( signals_seen < NBR_SIGNALS )); do
-            random_noise
-            ((signals_seen++))
-            random_sleep
-        done
-
         enc_key="$(generate_encryption_key)"
         echo $enc_key > "./var/cache/tmp/enc_key.solution"
         #./encode.sh "$ECHO_MSG" $enc_key
         ./encode.sh "$ECHO_MSG" "aA2"
         echo "$EVIL_FILE_NAME" > ./var/cache/tmp/evil_file.solution
         touch "$EVIL_FILE_NAME"
-        touch "$(random_str 5).sh"
+        fake_file_name=$(random_str 5).sh
+        touch "$fake_file_name"
+        
+        clear
+        while (( signals_seen < NBR_SIGNALS )); do
+            random_noise
+            ((signals_seen++))
+            random_sleep
+        done
     else
         echo "Error: wrong key/ip"
     fi
