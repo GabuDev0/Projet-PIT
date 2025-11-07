@@ -110,7 +110,7 @@ while (( ${#LEURRES[@]} < NUM_LEURRES )); do
     fi
 done
 
-# /!\ si y'a un nombre d'essais limités pour ping, il faut que le nombre de FAKE KEY soit aussi fixe
+# Affiche des logs de connexion
 for ((n=0;n<NBR_ENTRIES;n++)); do
     entry_type=$((RANDOM % 3))
     ts=$(date '+%Y-%m-%d %H:%M:%S')

@@ -2,6 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# Crée une clé décimale à partir d'une chaine alphanumérique.
 key_to_decimal() {
     local _key=$1
     local _res=0
@@ -16,6 +17,7 @@ key_to_decimal() {
 }
 
 # decode [file path] [key]
+# Décode le message en réalisant l'opération inverse de encode.sh
 decode() {
     local _try_key=$(key_to_decimal $2)
     while read -r line; do

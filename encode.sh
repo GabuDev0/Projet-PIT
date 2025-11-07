@@ -16,6 +16,7 @@ key_to_decimal() {
 }
 
 # encode [message] [key]
+# Encode le message en utilisant la méthode césar qui consiste à décaler de la valeur de la clé chaque octet composant le message.
 encode() {
     local message="$1"
     local key=$(key_to_decimal $2)

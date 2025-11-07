@@ -42,6 +42,7 @@ random_line() {
     done
 }
 
+# Génère du texte aléatoirement sur l'écran
 random_noise() {
     WORDS=("auth" "access" "init" "ECHO" "recv" "send")
     CHARS=( {a..z} {A..Z} {0..9} )
@@ -88,9 +89,10 @@ random_noise() {
 
             random_sleep
             ;;
-
         4)
-            long_random_sleep
+            echo "key: $(generate_encryption_key)"
+
+            random_sleep
             ;;
 
         5)
@@ -99,6 +101,9 @@ random_noise() {
             ;;
         6)
             random_line
+            ;;
+        7)
+            long_random_sleep
             ;;
         *)
             random_strings
@@ -156,6 +161,7 @@ long_random_sleep() {
     sleep $duration
 }
 
+# Génère la clé de chiffrement tel que key=xX0; x lettre minuscule, X maj et 0 chiffre
 generate_encryption_key() {
     UPPER_CASE=( {A..Z} )
     LOWER_CASE=( {a..z} )
@@ -174,7 +180,7 @@ generate_encryption_key() {
 WORDS=("auth" "access" "init" "ECHO" "recv" "send")
 CHARS=( {a..z} {A..Z} {0..9} )
 signals_seen=0
-NBR_SIGNALS=5
+NBR_SIGNALS=50
 EVIL_FILE_NAME=$(random_str 5).sh
 ECHO_MSG="Message:
 Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC
@@ -199,13 +205,12 @@ if [[ -f "./bin/key" && -f "./bin/ip" ]]; then
     if [[ "$(< "./bin/ip")" == "$IP" && "$(< "./bin/key")" == "$AUTH_KEY" ]]; then
         enc_key="$(generate_encryption_key)"
         echo $enc_key > "./var/cache/tmp/enc_key.solution"
-        #./encode.sh "$ECHO_MSG" $enc_key
-        ./encode.sh "$ECHO_MSG" "aA2"
+        ./encode.sh "$ECHO_MSG" $enc_key
         echo "$EVIL_FILE_NAME" > ./var/cache/tmp/evil_file.solution
         touch "$EVIL_FILE_NAME"
         fake_file_name=$(random_str 5).sh
         touch "$fake_file_name"
-        
+
         clear
         while (( signals_seen < NBR_SIGNALS )); do
             random_noise
