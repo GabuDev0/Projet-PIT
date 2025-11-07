@@ -14,12 +14,14 @@ case $level in
         chmod +x encode.sh
         chmod +x help.sh
         chmod +x ping.sh
+        chmod +x test_bruteforce.sh
 
         # // supprimer tous les fichiers inutiles
 
         rm -rf var/cache/tmp bin/
 
         mkdir -p var/cache/tmp bin/
+        mkdir -p var/log
 
         echo "Le jeu a commencé."
         echo
@@ -47,12 +49,9 @@ case $level in
         echo "Vous pouvez aussi relancer le script sans argument pour recommencer le jeu."
         ;;
     0)
-        ./create_logs.sh
+        ./activate_spy.sh
         ;;
 esac
-
-
-
 
 
 echo "Vous pouvez exécuter le script help.sh [c] pour la liste des scripts à utiliser ou, help.sh [num_jeu]

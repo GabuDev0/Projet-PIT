@@ -15,7 +15,7 @@ key_to_decimal() {
     echo $(($_res % 256))
 }
 
-# decode [file path] [key file path]
+# decode [file path] [key]
 decode() {
     local _try_key=$(key_to_decimal $2)
     while read -r line; do
@@ -43,5 +43,4 @@ decode() {
 TMP_FILE_NAME="tmp"
 TXT_FILE_NAME=".secret"
 
-echo "Message:"
-decode "$1" $(< $2)
+echo "$(decode "$1" "$2")"

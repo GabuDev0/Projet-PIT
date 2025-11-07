@@ -41,12 +41,12 @@ write_ack_with_key() {
     local msg
 
     msg=$(printf "%s echo net: SRC=%s DST=192.1.1.x ICMP_SEQ=%02d RESPONSE=ACK keyfrag=%s SESSION=established" \
-            "$ts" "$ip" "$seq" "$KEY")
+            "$ts" "$ip" "$seq" "$AUTH_KEY")
 
     echo "$msg"
     
-    printf "%s" "$ip" > "./var/cache/tmp/ip"
-    printf "%s" "$KEY" > "./var/cache/tmp/key"
+    printf "%s" "$ip" > "./var/cache/tmp/ip.solution"
+    printf "%s" "$AUTH_KEY" > "./var/cache/tmp/auth_key.solution"
     printf "%s\n" "$msg" >> "$NETLOG"
 }
 
@@ -74,7 +74,7 @@ write_ack() {
     local ts="$3"
     local msg
 
-    msg=$(printf "%s echo net: SRC=%s DST=echo.dst ICMP_SEQ=%02d RESPONSE=ACK SESSION=established\n" \
+    msg=$(printf "%s echo net: SRC=%s DST=192.1.1.x ICMP_SEQ=%02d RESPONSE=ACK SESSION=established\n" \
             "$ts" "$ip" "$seq")
 
     echo "$msg"
@@ -91,16 +91,16 @@ NETLOG="$OUTDIR/network.log"
 
 LEURRES=()
 NUM_LEURRES=12
-NBR_ENTRIES=10
+NBR_ENTRIES=15
 
 TARGET_IP=$(generate_random_ip)
 
 CHARS=( {a..z} {A..Z} {0..9} )
 
-KEY=""
+AUTH_KEY=""
 
 for ((i=0;i<5;i++)); do
-    KEY+="${CHARS[RANDOM % ${#CHARS[@]}]}"
+    AUTH_KEY+="${CHARS[RANDOM % ${#CHARS[@]}]}"
 done
 
 while (( ${#LEURRES[@]} < NUM_LEURRES )); do
@@ -132,11 +132,11 @@ for ((n=0;n<NBR_ENTRIES;n++)); do
             ;;
     esac
     if (( NBR_ENTRIES - n == 2)); then
-        # real key
+        # real AUTH_KEY
         write_ack_with_key "$TARGET_IP" 1 "$ts"
     fi
     if (( NBR_ENTRIES - n == 1)); then
-        # fake key 
+        # fake AUTH_KEY 
         ip_leurre=${LEURRES[$(( RANDOM % $NUM_LEURRES))]}
         write_ack_with_fake_key "$ip_leurre" 1 "$ts"
     fi

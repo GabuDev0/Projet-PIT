@@ -84,17 +84,7 @@ random_noise() {
             ;;
 
         3)
-            # key
-            len=$((RANDOM % 10 + 2))
-            key=$(printf "%04d" $((RANDOM % 10000)))
-
-            str="key: "
-            for ((i=0;i<len;i++)); do
-                key+="${CHARS[RANDOM % ${#CHARS[@]}]}"
-            done
-            str+=$key
-            printf $key >> ./bin/key 
-            random_echo "$str"
+            echo "key: $(generate_encryption_key)"
 
             random_sleep
             ;;
@@ -108,7 +98,6 @@ random_noise() {
             random_sleep
             ;;
         6)
-            #
             random_line
             ;;
         *)
@@ -148,7 +137,7 @@ random_str() {
     for ((i=0;i<len;i++)); do
         str+="${CHARS[RANDOM % ${#CHARS[@]}]}"
     done
-    random_echo "$str"
+    printf "%s" "$str"
 }
 random_echo() {
     if (( RANDOM % 2 == 0 )); then
@@ -164,23 +153,38 @@ random_sleep() {
 }
 
 long_random_sleep() {
-    duration=0.$((($RANDOM % 20 + 10)*5))
+    duration=0.$((($RANDOM % 20 + 10)))
     sleep $duration
+}
+
+generate_encryption_key() {
+    UPPER_CASE=( {A..Z} )
+    LOWER_CASE=( {a..z} )
+    DIGITS=( {0..9} )
+
+    # choisir indices aléatoires
+    local idx0 idx1 idx2 idx3
+    idx0=$(( RANDOM % ${#LOWER_CASE[@]} ))   # première minuscule
+    idx1=$(( RANDOM % ${#UPPER_CASE[@]} ))   # majuscule
+    idx2=$(( RANDOM % ${#DIGITS[@]} ))   # chiffre
+
+    local key="${LOWER_CASE[idx0]}${UPPER_CASE[idx1]}${DIGITS[idx2]}"
+    printf %s "$key"
 }
 
 WORDS=("auth" "access" "init" "ECHO" "recv" "send")
 CHARS=( {a..z} {A..Z} {0..9} )
 signals_seen=0
-NBR_SIGNALS=10
-EVIL_FILE_NAME=$(random_str 5).sh
-ECHO_MSG="
+NBR_SIGNALS=30
+EVIL_FILE_NAME="$(random_str 5).sh"
+ECHO_MSG="Message:
 Voici notre prochain objectif: DÉTRUIRE LE DÉPARTEMENT TC
 
 Voici les détails du plan:
 
-XX XX X XXXX XX XXXXX XXXX XXXXXXX XXX X X XXX XX X X X XX X X XXXXX X X X
-XXXXX X XX XX X XXXXX XXXXXX X XXXXXXXXX X X XXXX X X XX X XXXXX X X XXXXX
-XXXX X X XXXX X X XX X XXXX X X X XX XX X X XX X XXXXX X X XXXX X X XX X X
+XX XX X XXXX XX XX XX XXXX XXXXXXX XXX X X XXX XX X X X XX X X XXXXX XXX X
+XXXXX X XX XX X XXXXX X XXXX X XXXXXXXXX X X XXXX X X XX X XXXXX X X XXXXX
+XXXX X X XXXX X X XX X XXXX X X X XX XX X X XX X XXXXX X X XXXX X X XXX XX
 XXXX X XX XX X XXXXXX X XX XX X XXXXX XXXXXX X XXX XXX X X X XX X X XX X X
 X XXX X X XXXX X X XX X XXX XX X XX XX X XXXXX XXXXXX X XXXXXXXXX X X XXXX
 
@@ -188,17 +192,30 @@ XXX XXXXXX X XXXXXXXXX X X XXXX X X XX X X
 
 Le fichier à envoyer est ./$EVIL_FILE_NAME"
 
-# ./bin/key est la clé utilisée pour se connecter à ECHO
-if [ -f "./bin/key" ] && [ -f "./bin/ip" ]; then
-    clear
-    while (( signals_seen < NBR_SIGNALS )); do
-        random_noise
-        ((signals_seen++)) 
-        random_sleep
-    done
+IP=$(< "./var/cache/tmp/ip.solution")
+AUTH_KEY=$(< "./var/cache/tmp/auth_key.solution")
 
-    ./encode.sh "$ECHO_MSG" $(< "./bin/key")
-    touch $EVIL_FILE_NAME
+# Vérif que l'ip / clé d'authentification sont les bonnes.
+if [[ -f "./bin/key" && -f "./bin/ip" ]]; then
+    if [[ "$(< "./bin/ip")" == "$IP" && "$(< "./bin/key")" == "$AUTH_KEY" ]]; then
+        clear
+        while (( signals_seen < NBR_SIGNALS )); do
+            random_noise
+            ((signals_seen++))
+            random_sleep
+        done
+
+        enc_key="$(generate_encryption_key)"
+        echo $enc_key > "./var/cache/tmp/enc_key.solution"
+        #./encode.sh "$ECHO_MSG" $enc_key
+        ./encode.sh "$ECHO_MSG" "aA2"
+        echo "$EVIL_FILE_NAME" > ./var/cache/tmp/evil_file.solution
+        touch "$EVIL_FILE_NAME"
+        touch "$(random_str 5).sh"
+    else
+        echo "Error: wrong key/ip"
+    fi
+    
 else
     echo "Error: key/ip not found in ./bin/"
 fi
